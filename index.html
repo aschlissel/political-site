@@ -25,8 +25,6 @@
     // e.g. $('input[type="range"]') elements.
     $('input[type="range"]').rangeslider();
 
-
-
     $(function() {
         var $document = $(document),
             $inputRange = $('input[type="range"]');
@@ -48,3 +46,27 @@
             });
         });
 </script>
+<script>
+  <!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR  HEIGHT -->
+     function getAndDrawChance(age, year, nodes){
+       year = year - 1900;
+       $.ajax({
+         type: "POST",
+         contentType: "application/json; charset=utf-8",
+         url: "/score",
+         dataType: "json",
+         async: true,
+         data: "{\"example\": ["+age+","+year+","+nodes+"]}",
+         success: function (data) {
+           var chance = 100 * data["score"];
+           d3.select("#chancebar")
+             .attr("width", chance_scale(chance));
+           d3.select("#percent_text")
+             .attr("x", chance_scale(chance-5))
+             .text(chance.toFixed(1) + "%");
+         },
+         error: function (result) {
+         }
+       })
+     }
+     </script>
