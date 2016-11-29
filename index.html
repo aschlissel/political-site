@@ -48,12 +48,11 @@
 </script>
 <script>
   <!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR  HEIGHT -->
-     function getAndDrawChance(age, year, nodes){
-       year = year - 1900;
+     function getJustices(year){
        $.ajax({
          type: "POST",
          contentType: "application/json; charset=utf-8",
-         url: "/score",
+         url: "/justices",
          dataType: "json",
          async: true,
          data: "{\"example\": ["+age+","+year+","+nodes+"]}",
