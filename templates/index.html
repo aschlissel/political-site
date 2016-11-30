@@ -1,5 +1,6 @@
+{% extends "layout.html" %}
+{% block body %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="rangeslider.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -19,12 +20,11 @@
     data-orientation="vertical" // default horizontal
 >
    <output class="output"></output>
+    <input type="text" size="5" id="year">
+    <p><a href="javascript:void();" id="calculate">calculate server side</a></p>
 </div>
+<div id="result"></div>
 <script>
-    // Initialize a new plugin instance for all
-    // e.g. $('input[type="range"]') elements.
-    $('input[type="range"]').rangeslider();
-
     $(function() {
         var $document = $(document),
             $inputRange = $('input[type="range"]');
@@ -40,32 +40,19 @@
             $document.on('input', 'input[type="range"]', function(e) {
                 valueOutput(e.target);
             });
-            
-            $inputRange.rangeslider({
-                polyfill: false
-            });
         });
 </script>
 <script>
-  <!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR  HEIGHT -->
-     function getJustices(year){
-       $.ajax({
-         type: "POST",
-         contentType: "application/json; charset=utf-8",
-         url: "/justices",
-         dataType: "json",
-         async: true,
-         data: "{\"example\": ["+age+","+year+","+nodes+"]}",
-         success: function (data) {
-           var chance = 100 * data["score"];
-           d3.select("#chancebar")
-             .attr("width", chance_scale(chance));
-           d3.select("#percent_text")
-             .attr("x", chance_scale(chance-5))
-             .text(chance.toFixed(1) + "%");
-         },
-         error: function (result) {
-         }
-       })
-     }
-     </script>
+    $(function() {
+      $('a#calculate').bind('click', function() {
+        $.getJSON($SCRIPT_ROOT + '/justices', {
+          year: $(year).val()
+        }, function(data) {
+          $("#result").text(data.result);
+          console.log(data.result)
+        });
+        return false;
+      });
+    });
+  </script>
+{% endblock %}
