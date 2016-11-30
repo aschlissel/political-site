@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
-names = pd.read_csv('justices.csv')
+df = pd.read_csv('justices.csv')
+df.start = [datetime.strptime(x, '%Y-%m-%d') for x in df.start] 
+df.end = [datetime.strptime(x, '%Y-%m-%d') for x in df.end] 
 
 @app.route('/')
 def index():
@@ -12,8 +15,12 @@ def index():
 
 @app.route('/justices')
 def justices():
+	justices = []
 	year = request.args.get('year', 0, type=int)
-	return jsonify(result=year)
+	for i, row in df.iterrows():
+		if row.start.year <= year <= row.end.year:
+			justices.append(row.justice)
+	return jsonify(result=year, justices=justices)
 
 
 if __name__ == '__main__':

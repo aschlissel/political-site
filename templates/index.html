@@ -48,8 +48,8 @@
         $.getJSON($SCRIPT_ROOT + '/justices', {
           year: $(year).val()
         }, function(data) {
-          $("#result").text(data.result);
-          console.log(data.result)
+          $("#result").text(data.justices);
+          //console.log(data.justices);
         });
         return false;
       });
